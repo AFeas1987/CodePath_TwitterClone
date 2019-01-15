@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.codepath.apps.twitterclone.R;
 import com.codepath.apps.twitterclone.models.Tweet;
 
@@ -54,8 +56,11 @@ public class TweetAdapter extends PagedListAdapter<Tweet, TweetAdapter.ViewHolde
             holder.tvTweet.setText(tweet.body);
             holder.tvName.setText(tweet.user.name);
             holder.tvHandle.setText(String.format("@%s", tweet.user.screenName));
+            holder.tvCreated.setText(String.format("• %s", tweet.createdAt));
             Glide.with(context).load(tweet.user.profilePicUrl_HD)
-                    .thumbnail(Glide.with(context).load(tweet.user.profilePicUrl))
+                    .apply(new RequestOptions().transform(new CircleCrop()))
+                    .thumbnail(Glide.with(context).load(tweet.user.profilePicUrl)
+                            .apply(new RequestOptions().transform(new CircleCrop())))
                     .into(holder.ivProfilePic);
         }
         else {
@@ -70,6 +75,7 @@ public class TweetAdapter extends PagedListAdapter<Tweet, TweetAdapter.ViewHolde
         public ImageView ivProfilePic;
         public TextView tvName;
         public TextView tvHandle;
+        public TextView tvCreated;
         public TextView tvTweet;
 
         public ViewHolder(View itemView) {
@@ -77,6 +83,7 @@ public class TweetAdapter extends PagedListAdapter<Tweet, TweetAdapter.ViewHolde
             ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
             tvName = itemView.findViewById(R.id.tvName);
             tvHandle = itemView.findViewById(R.id.tvHandle);
+            tvCreated = itemView.findViewById(R.id.tvCreated);
             tvTweet = itemView.findViewById(R.id.tvTweet);
         }
     }

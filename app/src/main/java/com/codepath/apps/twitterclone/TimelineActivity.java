@@ -1,20 +1,16 @@
 package com.codepath.apps.twitterclone;
 
-import androidx.lifecycle.ViewModelProviders;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
 import android.os.Bundle;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 
 import com.codepath.apps.twitterclone.adapters.TweetAdapter;
 import com.codepath.apps.twitterclone.models.TweetViewModel;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class TimelineActivity extends AppCompatActivity {
 
@@ -35,6 +31,10 @@ public class TimelineActivity extends AppCompatActivity {
         swipeContainer = findViewById(R.id.swipeContainer);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
-        viewModel.invalidate();
+        swipeContainer.setOnRefreshListener(() -> {
+//            viewModel.wipeData();
+//            viewModel.invalidate();
+            swipeContainer.setRefreshing(false);
+        });
     }
 }
