@@ -1,9 +1,8 @@
-package com.codepath.apps.twitterclone.models;
+package com.codepath.apps.twitterclone.ui.recView.models;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 import android.icu.text.SimpleDateFormat;
 import android.text.format.DateUtils;
@@ -15,34 +14,30 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.util.Locale;
 
-/*
- * This is a temporary, sample model that demonstrates the basic structure
- * of a SQLite persisted Model object. Check out the Room guide for more details:
- * https://github.com/codepath/android_guides/wiki/Room-Guide
- *
- */
-@Entity
-public class Tweet {
+public class Tweet extends RealmObject {
 
-	@PrimaryKey(autoGenerate = true)
+    @PrimaryKey
 	public Long uid;
 
-	// Define table fields
-	@ColumnInfo
+    @Required
     public String createdAt;
 
-	@Ignore
 	public User user;
+
+    @Required
 	public String body;
 
 	public Tweet() {}
 
-	// Parse model from JSON
+    public String getCreatedAt() {
+        return getRelativeTimeAgo(createdAt);
+    }
+
 	public static Tweet fromJson(JSONObject object) throws JSONException{
 		Tweet tweet = new Tweet();
 		tweet.body = object.getString("text");
 		tweet.uid = object.getLong("id");
-		tweet.createdAt = getRelativeTimeAgo(object.getString("created_at"));
+		tweet.createdAt = object.getString("created_at");
 		tweet.user = User.fromJson(object.getJSONObject("user"));
 
 		Log.d("_AF", "~~~~~~~~ " + tweet.uid + ", " + tweet.createdAt +
@@ -61,9 +56,7 @@ public class Tweet {
 			long dateMillis = sf.parse(rawJsonDate).getTime();
 			relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
 					System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		} catch (ParseException e) {e.printStackTrace();}
 
 		return relativeDate.replace(" ago", "")
                 .replace(" Yesterday", "1d")

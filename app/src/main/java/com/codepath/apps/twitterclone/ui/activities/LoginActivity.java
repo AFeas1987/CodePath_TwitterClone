@@ -1,4 +1,4 @@
-package com.codepath.apps.twitterclone;
+package com.codepath.apps.twitterclone.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
+import com.codepath.apps.twitterclone.R;
+import com.codepath.apps.twitterclone.api.network.TwitterClient;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {

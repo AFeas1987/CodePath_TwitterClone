@@ -1,14 +1,27 @@
-package com.codepath.apps.twitterclone.models;
+package com.codepath.apps.twitterclone.ui.recView.models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class User {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
-    public String name;
+public class User extends RealmObject {
+
+    @PrimaryKey
     public long uid;
+
+    @Required
+    public String name;
+
+    @Required
     public String screenName;
+
+    @Required
     public String profilePicUrl;
+
+    @Required
     public String profilePicUrl_HD;
 
     public static User fromJson(JSONObject object) throws JSONException {

@@ -1,4 +1,4 @@
-package com.codepath.apps.twitterclone;
+package com.codepath.apps.twitterclone.api.network;
 
 import android.content.Context;
 import android.util.Log;
