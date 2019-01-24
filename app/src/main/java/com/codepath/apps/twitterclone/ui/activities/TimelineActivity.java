@@ -1,19 +1,20 @@
 package com.codepath.apps.twitterclone.ui.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.codepath.apps.twitterclone.R;
 import com.codepath.apps.twitterclone.api.TwitterApplication;
 import com.codepath.apps.twitterclone.ui.recView.adapters.TweetRealmAdapter;
-import com.codepath.apps.twitterclone.ui.recView.models.Tweet;
 import com.codepath.apps.twitterclone.ui.recView.util.TweetViewModel;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import io.realm.Realm;
+
 import io.realm.Sort;
 
 public class TimelineActivity extends AppCompatActivity {
@@ -21,6 +22,7 @@ public class TimelineActivity extends AppCompatActivity {
     private RecyclerView rvTweets;
     private TweetRealmAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
+//    private LiveData<>
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +30,26 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
         TweetViewModel viewModel = ViewModelProviders.of(this).get(TweetViewModel.class);
         rvTweets = findViewById(R.id.rvTweets);
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new TweetRealmAdapter(this, Realm.getDefaultInstance().where(Tweet.class)
-                .sort("uid", Sort.DESCENDING).findAllAsync(), true);
+        LinearLayoutManager llMgr = new LinearLayoutManager(this);
+        rvTweets.setLayoutManager(llMgr);
+        rvTweets.addItemDecoration(new DividerItemDecoration(
+                rvTweets.getContext(), llMgr.getOrientation()));
+        adapter = new TweetRealmAdapter(this, viewModel.tweets.getResults()
+                .sort("uid", Sort.DESCENDING), true);
         rvTweets.setAdapter(adapter);
-        viewModel.tweets.observe(this, res -> {});
+        viewModel.tweets.observe(this, res -> {
+//            adapter.refreshVisibleData(rvTweets);
+            Log.d("_AF", "LiveData refresh observed in Activity.  Tweets: " + adapter.getItemCount());
+        });
         swipeContainer = findViewById(R.id.swipeContainer);
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+        swipeContainer.setColorSchemeResources(
+                android.R.color.holo_blue_bright, android.R.color.holo_green_light,
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        rvTweets.setOnScrollChangeListener(adapter.createScrollListener(rvTweets));
         swipeContainer.setOnRefreshListener(() -> {
-            TwitterApplication.getTweetRepo().loadMoreTweets(true);
+            if (!adapter.getItem(0).createdRecently())
+                TwitterApplication.getTweetRepo().getNewTweets(0);
+            adapter.refreshVisibleData(rvTweets);
             swipeContainer.setRefreshing(false);
         });
     }

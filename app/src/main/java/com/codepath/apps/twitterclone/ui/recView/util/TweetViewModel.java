@@ -1,19 +1,20 @@
 package com.codepath.apps.twitterclone.ui.recView.util;
 
 import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
+import android.support.annotation.NonNull;
 
+import com.codepath.apps.twitterclone.api.TweetRepository;
 import com.codepath.apps.twitterclone.api.TwitterApplication;
 import com.codepath.apps.twitterclone.ui.recView.models.Tweet;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 
 public class TweetViewModel extends AndroidViewModel {
     public RealmLiveData<Tweet> tweets;
 
-
     public TweetViewModel(@NonNull Application application) {
         super(application);
-        tweets = TwitterApplication.getTweetRepo().getAllTweets();
+        TweetRepository repo = TwitterApplication.getTweetRepo();
+        tweets = repo.getAllTweetsFromRealm();
     }
 }

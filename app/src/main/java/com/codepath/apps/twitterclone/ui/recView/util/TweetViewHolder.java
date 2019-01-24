@@ -1,12 +1,12 @@
 package com.codepath.apps.twitterclone.ui.recView.util;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.apps.twitterclone.R;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 public class TweetViewHolder extends RecyclerView.ViewHolder {
 

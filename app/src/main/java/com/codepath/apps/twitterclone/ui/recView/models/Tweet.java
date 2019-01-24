@@ -33,15 +33,23 @@ public class Tweet extends RealmObject {
         return getRelativeTimeAgo(createdAt);
     }
 
+    public boolean createdRecently() throws NumberFormatException{
+		String str = getCreatedAt();
+		int time;
+		if (!str.matches("[d]m"))
+			return false;
+		time = Integer.parseInt(str.replace("m", ""));
+		return time > 2;
+	}
+
 	public static Tweet fromJson(JSONObject object) throws JSONException{
 		Tweet tweet = new Tweet();
-		tweet.body = object.getString("text");
 		tweet.uid = object.getLong("id");
+		tweet.body = object.getString("text");
 		tweet.createdAt = object.getString("created_at");
 		tweet.user = User.fromJson(object.getJSONObject("user"));
 
-		Log.d("_AF", "~~~~~~~~ " + tweet.uid + ", " + tweet.createdAt +
-                ":\n\t\t" + tweet.user.screenName + ":  " + tweet.body);
+		Log.d("_AF", "~~~~~~~~ " + tweet.uid + ", " + tweet.createdAt + " by " + tweet.user.screenName);
 
 		return tweet;
 	}

@@ -9,37 +9,49 @@ import com.codepath.apps.twitterclone.ui.recView.models.Tweet;
 import com.codepath.apps.twitterclone.ui.recView.util.RealmLiveData;
 
 import io.realm.Realm;
+import io.realm.Sort;
+
+import static com.codepath.apps.twitterclone.api.network.TweetNetworkService.SESSION_MAX;
 
 public class TweetRepository {
     public RealmLiveData<Tweet> tweets;
     private TweetNetworkService netService;
-    private static long SESSION_MAX;
 
     public TweetRepository(Context context) {
         TwitterClient client = TwitterApplication.getRestClient(context);
         netService = new TweetNetworkService(client);
-        loadMoreTweets(true);
-        getAllTweets();
+        getAllTweetsFromRealm();
+        getNewTweets(0);
     }
 
-    public void loadMoreTweets(boolean refresh){
-        netService.refreshTimeline(SESSION_MAX = refresh ? 0 : SESSION_MAX);
+    public void loadOlderTweets(long after){
+        netService.loadOlderTweets(after);
+        getAllTweetsFromRealm();
     }
 
-    public RealmLiveData<Tweet> getAllTweets() {
+    public void getNewTweets(long since){
+        netService.getNewTweets(since);
+        getAllTweetsFromRealm();
+    }
+
+    public RealmLiveData<Tweet> getAllTweetsFromRealm() {
         return tweets != null ? tweets : (tweets =
-                new RealmLiveData<>(Realm.getDefaultInstance().where(Tweet.class).sort("uid").findAllAsync()));
+                new RealmLiveData<>(Realm.getDefaultInstance().where(Tweet.class)
+                        .sort("uid", Sort.DESCENDING).findAllAsync()));
     }
 
     public static void appendToRealm(Tweet... tweets) {
         try(Realm realmInstance = Realm.getDefaultInstance()) {
-            realmInstance.executeTransaction((realm) -> {
+            realmInstance.executeTransactionAsync((realm) -> {
                 for (Tweet t : tweets) {
-                    realm.insertOrUpdate(t);
-                    SESSION_MAX = t.uid > SESSION_MAX ? t.uid : SESSION_MAX;
+                    if (realm.where(Tweet.class).equalTo("uid", t.uid).findFirst() == null) {
+                        realm.insertOrUpdate(t);
+                        SESSION_MAX = t.uid > SESSION_MAX ? t.uid : SESSION_MAX;
+                        Log.d("_AF",
+                                "################  Tweet added to Realm!  ################");
+                    }
                 }
             });
-            Log.d("_AF", "@@@@@@@@@  Tweets added to Realm!  @@@@@@@@");
         }
     }
 }

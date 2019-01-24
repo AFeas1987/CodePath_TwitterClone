@@ -33,6 +33,7 @@ public class TwitterClient extends OAuthBaseClient {
 	// See https://developer.chrome.com/multidevice/android/intents
 	public static final String REST_CALLBACK_URL_TEMPLATE =
             "intent://%s#Intent;action=android.intent.action.VIEW;scheme=%s;package=%s;S.browser_fallback_url=%s;end";
+	public static final int PAGE_SIZE = 25;
 
 	public TwitterClient(Context context) {
 		super(context, REST_API_INSTANCE,
@@ -42,16 +43,27 @@ public class TwitterClient extends OAuthBaseClient {
 				String.format(REST_CALLBACK_URL_TEMPLATE, "cprest",
 						"oauth", context.getPackageName(), FALLBACK_URL));
 	}
-	// CHANGE THIS
-	// DEFINE METHODS for different API endpoints here
-	public void getHomeTimeline(long max, AsyncHttpResponseHandler handler) {
-		Log.d("_AF", "getHomeTimeline: Request for data, max = " + max);
+
+
+	public void loadOlderTweets(long after, AsyncHttpResponseHandler handler) {
+		Log.d("_AF", "getHomeTimeline: Request for data, after = " + after);
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
-//		params.put("count", 25);
-		if (max > 0)
-			params.put("max_id", max);
+		params.put("count", PAGE_SIZE);
+		if (after > 0)
+			params.put("max_id", after);
+		client.get(apiUrl, params, handler);
+	}
+
+	public void getNewTweets(long min, AsyncHttpResponseHandler handler) {
+		Log.d("_AF", "getHomeTimeline: Request for data, min = " + min);
+		String apiUrl = getApiUrl("statuses/home_timeline.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+//		params.put("count", PAGE_SIZE);
+//		if (min > 0)
+//			params.put("since_id", min);
 		client.get(apiUrl, params, handler);
 	}
 
