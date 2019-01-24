@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppBaseTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppBaseTheme" parent="Theme.AppCompat">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
+
+        <item name="colorControlNormal">#2FD337</item>
+        <item name="colorControlActivated">#2238FF</item>
+        <item name="colorControlHighlight">#AB36F4</item>
     </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="counterOverride">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+    </style>
+
+    <style name="counterText">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>

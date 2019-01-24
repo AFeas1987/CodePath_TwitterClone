@@ -44,13 +44,13 @@ public class TweetRealmAdapter extends RealmRecyclerViewAdapter<Tweet, TweetView
             LinearLayoutManager llMgr = (LinearLayoutManager)rView.getLayoutManager();
             int current = llMgr != null ? llMgr.findLastVisibleItemPosition() : 0;
             int count = getItemCount();
-            if (current % PAGE_SIZE == 0 || count - PAGE_SIZE <= current) {
-                Log.d("_AF", "loadOlder triggered");
-                int pos = current + PAGE_SIZE < count ?
-                        current + PAGE_SIZE : count;
-                Tweet t = getItem(pos);
-                if (t != null)
-                    TwitterApplication.getTweetRepo().loadOlderTweets(t.uid);
+            if (current % PAGE_SIZE == 0 || count - PAGE_SIZE <= current) {     // Should first check for idle network
+                Log.d("_AF", "loadOlder requested");
+//                int pos = current + PAGE_SIZE < count ?
+//                        current + PAGE_SIZE : count;
+//                Tweet t = getItem(pos);
+//                if (t != null)
+//                    TwitterApplication.getTweetRepo().loadOlderTweets(t.uid);
             }
         };
     }
