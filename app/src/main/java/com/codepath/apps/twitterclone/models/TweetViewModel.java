@@ -35,6 +35,6 @@ public class TweetViewModel extends AndroidViewModel {
                 .setEnablePlaceholders(true).setInitialLoadSizeHint(50).build();
         source = factory.create();
         tweets = new MutableLiveData<>();
-        new Thread(() -> tweets = new LivePagedListBuilder<>(factory, config).build()).start();
+        tweets = new LivePagedListBuilder<>(factory, config).build();
     }
 }

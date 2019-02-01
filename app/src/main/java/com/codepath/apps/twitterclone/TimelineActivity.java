@@ -26,11 +26,12 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweets = findViewById(R.id.rvTweets);
         rvTweets.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TweetAdapter(this);
-        viewModel.tweets.observe(this, tweets -> adapter.submitList(tweets));
         rvTweets.setAdapter(adapter);
+        viewModel.tweets.observe(this, tweets -> adapter.submitList(tweets));
         swipeContainer = findViewById(R.id.swipeContainer);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        viewModel.invalidate();
         swipeContainer.setOnRefreshListener(() -> {
 //            viewModel.wipeData();
 //            viewModel.invalidate();

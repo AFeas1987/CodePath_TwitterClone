@@ -33,6 +33,7 @@ public class TweetDataSource extends ItemKeyedDataSource<Long, Tweet> {
 
     @Override
     public void loadAfter(@NonNull LoadParams<Long> params, @NonNull LoadCallback<Tweet> callback) {
+        Log.d("_AF", "loadAfter called!!!!!!!!!");
         JsonHttpResponseHandler handler = createTweetHandler(callback, true);
         client.getHomeTimeline(params.key - 1, handler);
     }
